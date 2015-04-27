@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="header">
+            <h2 class="text-center">Real Time Web Chat</h2>
+            <hr/>
+        </div>
+        
+        <div class="chat">
+            <div class="msg-body"></div>
+        </div>
+        
+        <div class="footer">
+            <hr/>
+            <form class="form form-horizontal" id="message-form">
+                <div class="form-group">
+                    <div class="col-sm-10">
+                        <textarea row="2" class="form-control" id="msg" required></textarea>
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="Send Message">
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
