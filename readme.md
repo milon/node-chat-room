@@ -18,7 +18,7 @@ node index.js
 
 Then go to `http://localhost:3000` to see the app.
 
-** Disclaimar: The GUI is not ready yet. You can see you chat messages on your console of browser.**
+**Disclaimar: The GUI is not ready yet. You can see you chat messages on your console of browser.**
 
 ## To Do
 
