@@ -4,7 +4,7 @@
   "description": "Demo Chat App",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server": "node index.js"
   },
   "author": "Nuruzzaman Milon",
   "license": "MIT",
@@ -12,5 +12,8 @@
     "express": "^4.10.2",
     "socket.io": "^1.3.5",
     "swig": "^1.4.2"
+  },
+  "devDependencies": {
+    "browserify": "^10.1.3"
   }
 }

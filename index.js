@@ -47,22 +47,22 @@ app.get('/', function(req, res){
  */
 io.on('connection', function(client){
     console.log('Client connected to server...');
-    
+
     client.on('message', function(message){
         var nickname = client.nickname;
         console.log(nickname + ': ' + message);
-        
+
         client.broadcast.emit('message', nickname + ': ' + message);
         client.emit('message', nickname + ': ' + message);
-        
+
         storeMessage(nickname, message);
     });
-    
+
     //joined event
     client.on('joined', function(name){
         client.nickname = name;
         console.log(client.nickname + ' joined the chat.');
-        
+
         //display previous messages
         messages.forEach(function(message){
             client.emit('message', message.name + ': ' + message.message);
@@ -79,9 +79,8 @@ var storeMessage = function(name, message){
         name: name,
         message: message
     });
-    
+
     if(messages.length > 20){
         messages.shift();
     }
 };
-
