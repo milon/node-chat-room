@@ -5,11 +5,11 @@ export default class MessageList extends Component {
   render() {
 
     var renderMessage = this.props.messages.map((message, index) => {
-      return <li key={index}> <span className="author">{message.author}</span>: {message.text}</li>;
+      if(message.text != '') {
+        return <li key={index}> <span className="author">{message.author}</span>: {message.text}</li>;
+      }
     });
 
-    return (<ul>
-      {renderMessage}
-    </ul>);
+    return <ul> {renderMessage} </ul>;
   }
 }

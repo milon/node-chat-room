@@ -51,9 +51,9 @@ io.on('connection', function(client){
     client.on('message', function(message){
         var nickname = client.nickname;
         console.log(nickname + ': ' + message);
-
-        client.broadcast.emit('message', nickname + ': ' + message);
-        client.emit('message', nickname + ': ' + message);
+        var data = {author: nickname, text: message};
+        client.broadcast.emit('message', data);
+        client.emit('message', data);
 
         storeMessage(nickname, message);
     });
@@ -65,7 +65,7 @@ io.on('connection', function(client){
 
         //display previous messages
         messages.forEach(function(message){
-            client.emit('message', message.name + ': ' + message.message);
+            client.emit('message', message);
         });
     });
 });
@@ -76,8 +76,8 @@ var messages = [];
 //push message
 var storeMessage = function(name, message){
     messages.push({
-        name: name,
-        message: message
+        author: name,
+        text: message
     });
 
     if(messages.length > 20){
