@@ -19032,30 +19032,80 @@ var _MessageBox2 = _interopRequireDefault(_MessageBox);
 
 var socket = io.connect();
 
-var ChatRoom = _reactDom2['default'].render(_react2['default'].createElement(_MessageBox2['default'], { socket: socket }), document.querySelector('#content'));
+var ChatRoom = _reactDom2['default'].render(_react2['default'].createElement(_MessageBox2['default'], { socket: socket }), document.querySelector('#msg-body'));
 
 socket.on('message', function (data) {
     console.log(data);
     ChatRoom.newMessage(data);
 });
 
-//On connect to server
-socket.on('connect', function () {
-    var nickname = prompt('What is your name?');
+},{"./MessageBox":161,"react":158,"react-dom":2}],160:[function(require,module,exports){
+'use strict';
 
-    //trigger joined event
-    socket.emit('joined', nickname);
+Object.defineProperty(exports, '__esModule', {
+  value: true
 });
 
-$('#message-form').submit(function (evt) {
-    evt.preventDefault();
-    var message = $('#msg').val();
-    $('#msg').val('');
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-    socket.emit('message', message);
-});
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
-},{"./MessageBox":160,"react":158,"react-dom":2}],160:[function(require,module,exports){
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var Message = (function (_Component) {
+  _inherits(Message, _Component);
+
+  function Message() {
+    _classCallCheck(this, Message);
+
+    _get(Object.getPrototypeOf(Message.prototype), 'constructor', this).apply(this, arguments);
+  }
+
+  _createClass(Message, [{
+    key: 'render',
+    value: function render() {
+      console.log('dgjakjglk');
+      return _react2['default'].createElement(
+        'div',
+        { className: 'row msg_container base_' },
+        _react2['default'].createElement(
+          'div',
+          { className: 'col-md-10 col-xs-10' },
+          _react2['default'].createElement(
+            'div',
+            { className: 'messages msg base_' },
+            _react2['default'].createElement(
+              'p',
+              null,
+              this.props.message.text
+            )
+          )
+        ),
+        _react2['default'].createElement(
+          'div',
+          { className: 'col-md-2 col-xs-2 avatar' },
+          _react2['default'].createElement('img', { src: 'http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg', className: ' img-responsive ' }),
+          this.props.message.text
+        )
+      );
+    }
+  }]);
+
+  return Message;
+})(_react.Component);
+
+exports['default'] = Message;
+module.exports = exports['default'];
+
+},{"react":158}],161:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -19093,10 +19143,30 @@ var MessageBox = (function (_Component) {
     _classCallCheck(this, MessageBox);
 
     _get(Object.getPrototypeOf(MessageBox.prototype), 'constructor', this).call(this, props);
-    this.state = { messageList: [{ author: 'Mahbub', text: 'hello' }] };
+
+    this.state = {
+      messageList: [{ author: 'Mahbub', text: 'hello' }],
+      currentUser: ''
+    };
+    this.getCurrentUser();
   }
 
   _createClass(MessageBox, [{
+    key: 'getCurrentUser',
+    value: function getCurrentUser() {
+      var _this = this;
+
+      var socket = this.props.socket;
+      socket.on('connect', function () {
+        if (_this.state.currentUser == '') {
+          var currentUser = prompt('What is your name?');
+          //trigger joined event
+          socket.emit('joined', currentUser);
+          _this.setState({ currentUser: currentUser });
+        }
+      });
+    }
+  }, {
     key: 'newMessage',
     value: function newMessage(data) {
       var messageList = this.state.messageList.concat([data]);
@@ -19113,7 +19183,7 @@ var MessageBox = (function (_Component) {
           null,
           'This Message Box '
         ),
-        _react2['default'].createElement(_MessageList2['default'], { messages: this.state.messageList }),
+        _react2['default'].createElement(_MessageList2['default'], { messages: this.state.messageList, currentUser: this.props.currentUser }),
         _react2['default'].createElement(_MessageForm2['default'], { socket: this.props.socket })
       );
     }
@@ -19126,7 +19196,7 @@ exports['default'] = MessageBox;
 ;
 module.exports = exports['default'];
 
-},{"./MessageForm":161,"./MessageList":162,"react":158}],161:[function(require,module,exports){
+},{"./MessageForm":162,"./MessageList":163,"react":158}],162:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -19170,7 +19240,7 @@ var MessageForm = (function (_Component) {
     key: 'onChange',
     value: function onChange(e) {
       var inputContent = e.target.value;
-      console.log(this);
+      //console.log(this);
       this.setState({ inputContent: inputContent });
     }
   }, {
@@ -19199,7 +19269,7 @@ var MessageForm = (function (_Component) {
 exports['default'] = MessageForm;
 module.exports = exports['default'];
 
-},{"react":158}],162:[function(require,module,exports){
+},{"react":158}],163:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -19220,6 +19290,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _Message = require('./Message');
+
+var _Message2 = _interopRequireDefault(_Message);
+
 var MessageList = (function (_Component) {
   _inherits(MessageList, _Component);
 
@@ -19232,21 +19306,15 @@ var MessageList = (function (_Component) {
   _createClass(MessageList, [{
     key: 'render',
     value: function render() {
+      var _this = this;
 
       var renderMessage = this.props.messages.map(function (message, index) {
+        var messageType = 'receive';
+        if (_this.props.currentUser == message.author) {
+          messageType = 'sent';
+        }
         if (message.text != '') {
-          return _react2['default'].createElement(
-            'li',
-            { key: index },
-            ' ',
-            _react2['default'].createElement(
-              'span',
-              { className: 'author' },
-              message.author
-            ),
-            ': ',
-            message.text
-          );
+          return _react2['default'].createElement(_Message2['default'], { key: index, messageType: messageType, message: message });
         }
       });
 
@@ -19266,4 +19334,4 @@ var MessageList = (function (_Component) {
 exports['default'] = MessageList;
 module.exports = exports['default'];
 
-},{"react":158}]},{},[159]);
+},{"./Message":160,"react":158}]},{},[159]);

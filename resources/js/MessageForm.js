@@ -14,7 +14,7 @@ export default class MessageForm extends Component {
   }
   onChange(e) {
     var inputContent = e.target.value;
-    console.log(this);
+    //console.log(this);
     this.setState({inputContent});
   }
   render() {

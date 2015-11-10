@@ -7,3 +7,6 @@
 .chat{
     overflow: hidden;
 }
+.author{
+  font-weight: bold;
+}
