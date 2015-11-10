@@ -1,10 +1,15 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import MessageBox from './MessageBox';
+
 var socket = io.connect();
+
+var ChatRoom =  ReactDOM.render(<MessageBox socket={socket} />, document.querySelector('#content'));
+
 
 socket.on('message', function(data){
     console.log(data);
-
-    //TO-DO: append message to client side
-    //$('#msg-body').html(data);
+    ChatRoom.newMessage(data);
 });
 
 //On connect to server
