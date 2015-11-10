@@ -1,22 +1,26 @@
-import React from 'react';
+import React, {Component} from 'react';
 import MessageList from './MessageList';
+import MessageForm from './MessageForm';
 
-var MessageBox = React.createClass({
-  newMessage: function(data) {
+var socket = io.connect();
+
+export default class MessageBox extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {messageList:[{author: 'Mahbub', text: 'hello'}]}
+  }
+  newMessage(data) {
     var messageList = this.state.messageList.concat([data]);
     this.setState({messageList});
-  },
-  getInitialState: function() {
-    return {
-      messageList:[{author: 'Mahbub', text: 'hello'}]
-    }
-  },
-  render: function() {
-    console.log(this.state.messageList);
+  }
+  render() {
     return (
-      <MessageList messages={this.state.messageList} />
+      <div>
+        <h1>This Message Box </h1>
+        <MessageList messages={this.state.messageList} />
+        <MessageForm socket = {this.props.socket}/>
+      </div>
     );
   }
-});
-
-export default MessageBox;
+};

@@ -19030,16 +19030,13 @@ var _MessageBox = require('./MessageBox');
 
 var _MessageBox2 = _interopRequireDefault(_MessageBox);
 
-var ChatRoom = _reactDom2['default'].render(_react2['default'].createElement(_MessageBox2['default'], null), document.querySelector('#content'));
-
 var socket = io.connect();
+
+var ChatRoom = _reactDom2['default'].render(_react2['default'].createElement(_MessageBox2['default'], { socket: socket }), document.querySelector('#content'));
 
 socket.on('message', function (data) {
     console.log(data);
     ChatRoom.newMessage(data);
-
-    //TO-DO: append message to client side
-    //$('#msg-body').html(data);
 });
 
 //On connect to server
@@ -19065,7 +19062,15 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -19075,28 +19080,126 @@ var _MessageList = require('./MessageList');
 
 var _MessageList2 = _interopRequireDefault(_MessageList);
 
-var MessageBox = _react2['default'].createClass({
-  displayName: 'MessageBox',
+var _MessageForm = require('./MessageForm');
 
-  newMessage: function newMessage(data) {
-    var messageList = this.state.messageList.concat([data]);
-    this.setState({ messageList: messageList });
-  },
-  getInitialState: function getInitialState() {
-    return {
-      messageList: [{ author: 'Mahbub', text: 'hello' }]
-    };
-  },
-  render: function render() {
-    console.log(this.state.messageList);
-    return _react2['default'].createElement(_MessageList2['default'], { messages: this.state.messageList });
+var _MessageForm2 = _interopRequireDefault(_MessageForm);
+
+var socket = io.connect();
+
+var MessageBox = (function (_Component) {
+  _inherits(MessageBox, _Component);
+
+  function MessageBox(props) {
+    _classCallCheck(this, MessageBox);
+
+    _get(Object.getPrototypeOf(MessageBox.prototype), 'constructor', this).call(this, props);
+    this.state = { messageList: [{ author: 'Mahbub', text: 'hello' }] };
   }
-});
+
+  _createClass(MessageBox, [{
+    key: 'newMessage',
+    value: function newMessage(data) {
+      var messageList = this.state.messageList.concat([data]);
+      this.setState({ messageList: messageList });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        'div',
+        null,
+        _react2['default'].createElement(
+          'h1',
+          null,
+          'This Message Box '
+        ),
+        _react2['default'].createElement(_MessageList2['default'], { messages: this.state.messageList }),
+        _react2['default'].createElement(_MessageForm2['default'], { socket: this.props.socket })
+      );
+    }
+  }]);
+
+  return MessageBox;
+})(_react.Component);
 
 exports['default'] = MessageBox;
+;
 module.exports = exports['default'];
 
-},{"./MessageList":161,"react":158}],161:[function(require,module,exports){
+},{"./MessageForm":161,"./MessageList":162,"react":158}],161:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var MessageForm = (function (_Component) {
+  _inherits(MessageForm, _Component);
+
+  function MessageForm(props) {
+    _classCallCheck(this, MessageForm);
+
+    _get(Object.getPrototypeOf(MessageForm.prototype), 'constructor', this).call(this, props);
+    this.state = { inputContent: 'startValue' };
+  }
+
+  _createClass(MessageForm, [{
+    key: 'onSubmit',
+    value: function onSubmit(e) {
+      e.preventDefault();
+      var socket = this.props.socket;
+      socket.emit('message', this.state.inputContent);
+
+      this.setState({ inputContent: '' });
+    }
+  }, {
+    key: 'onChange',
+    value: function onChange(e) {
+      var inputContent = e.target.value;
+      console.log(this);
+      this.setState({ inputContent: inputContent });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        'div',
+        null,
+        _react2['default'].createElement(
+          'form',
+          { onSubmit: this.onSubmit.bind(this) },
+          _react2['default'].createElement('input', { value: this.state.inputContent, onChange: this.onChange.bind(this) }),
+          _react2['default'].createElement(
+            'button',
+            null,
+            ' Send '
+          )
+        )
+      );
+    }
+  }]);
+
+  return MessageForm;
+})(_react.Component);
+
+exports['default'] = MessageForm;
+module.exports = exports['default'];
+
+},{"react":158}],162:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
