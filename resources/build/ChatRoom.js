@@ -19032,30 +19032,89 @@ var _MessageBox2 = _interopRequireDefault(_MessageBox);
 
 var socket = io.connect();
 
-var ChatRoom = _reactDom2['default'].render(_react2['default'].createElement(_MessageBox2['default'], { socket: socket }), document.querySelector('#content'));
+var ChatRoom = _reactDom2['default'].render(_react2['default'].createElement(_MessageBox2['default'], { socket: socket }), document.querySelector('#msg-body'));
 
 socket.on('message', function (data) {
     console.log(data);
     ChatRoom.newMessage(data);
 });
 
-//On connect to server
-socket.on('connect', function () {
-    var nickname = prompt('What is your name?');
+},{"./MessageBox":161,"react":158,"react-dom":2}],160:[function(require,module,exports){
+"use strict";
 
-    //trigger joined event
-    socket.emit('joined', nickname);
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
 
-$('#message-form').submit(function (evt) {
-    evt.preventDefault();
-    var message = $('#msg').val();
-    $('#msg').val('');
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-    socket.emit('message', message);
-});
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
-},{"./MessageBox":160,"react":158,"react-dom":2}],160:[function(require,module,exports){
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var Message = (function (_Component) {
+  _inherits(Message, _Component);
+
+  function Message() {
+    _classCallCheck(this, Message);
+
+    _get(Object.getPrototypeOf(Message.prototype), "constructor", this).apply(this, arguments);
+  }
+
+  _createClass(Message, [{
+    key: "getAvatar",
+    value: function getAvatar(messageType) {
+      if (this.props.type == messageType) {
+
+        return _react2["default"].createElement(
+          "div",
+          { className: "col-md-2 col-xs-2 avatar" },
+          _react2["default"].createElement("img", { src: "http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg", className: " img-responsive " }),
+          this.props.author
+        );
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+
+      return _react2["default"].createElement(
+        "div",
+        { className: "row msg_container base_" + this.props.type },
+        this.getAvatar('receive'),
+        _react2["default"].createElement(
+          "div",
+          { className: "col-md-10 col-xs-10" },
+          _react2["default"].createElement(
+            "div",
+            { className: "messages msg_" + this.props.type },
+            _react2["default"].createElement(
+              "p",
+              null,
+              this.props.children
+            )
+          )
+        ),
+        this.getAvatar('sent')
+      );
+    }
+  }]);
+
+  return Message;
+})(_react.Component);
+
+exports["default"] = Message;
+module.exports = exports["default"];
+
+},{"react":158}],161:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -19093,12 +19152,33 @@ var MessageBox = (function (_Component) {
     _classCallCheck(this, MessageBox);
 
     _get(Object.getPrototypeOf(MessageBox.prototype), 'constructor', this).call(this, props);
-    this.state = { messageList: [{ author: 'Mahbub', text: 'hello' }] };
+    this.state = {
+      messageList: [{ author: 'Mahbub', text: 'hello' }],
+      currentUser: ''
+    };
+    this.getCurrentUser();
   }
 
   _createClass(MessageBox, [{
+    key: 'getCurrentUser',
+    value: function getCurrentUser() {
+      var _this = this;
+
+      var socket = this.props.socket;
+      socket.on('connect', function () {
+        //if username is not added then prompt user for username
+        if (_this.state.currentUser == '') {
+          var currentUser = prompt('What is your name?');
+          //trigger joined event
+          socket.emit('joined', currentUser);
+          _this.setState({ currentUser: currentUser });
+        }
+      });
+    }
+  }, {
     key: 'newMessage',
     value: function newMessage(data) {
+      // 'messageList' state should be updated when new message arived
       var messageList = this.state.messageList.concat([data]);
       this.setState({ messageList: messageList });
     }
@@ -19108,12 +19188,7 @@ var MessageBox = (function (_Component) {
       return _react2['default'].createElement(
         'div',
         null,
-        _react2['default'].createElement(
-          'h1',
-          null,
-          'This Message Box '
-        ),
-        _react2['default'].createElement(_MessageList2['default'], { messages: this.state.messageList }),
+        _react2['default'].createElement(_MessageList2['default'], { messages: this.state.messageList, currentUser: this.state.currentUser }),
         _react2['default'].createElement(_MessageForm2['default'], { socket: this.props.socket })
       );
     }
@@ -19126,7 +19201,7 @@ exports['default'] = MessageBox;
 ;
 module.exports = exports['default'];
 
-},{"./MessageForm":161,"./MessageList":162,"react":158}],161:[function(require,module,exports){
+},{"./MessageForm":162,"./MessageList":163,"react":158}],162:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -19154,7 +19229,7 @@ var MessageForm = (function (_Component) {
     _classCallCheck(this, MessageForm);
 
     _get(Object.getPrototypeOf(MessageForm.prototype), 'constructor', this).call(this, props);
-    this.state = { inputContent: 'startValue' };
+    this.state = { inputContent: '' };
   }
 
   _createClass(MessageForm, [{
@@ -19163,30 +19238,39 @@ var MessageForm = (function (_Component) {
       e.preventDefault();
       var socket = this.props.socket;
       socket.emit('message', this.state.inputContent);
-
       this.setState({ inputContent: '' });
     }
   }, {
     key: 'onChange',
     value: function onChange(e) {
       var inputContent = e.target.value;
-      console.log(this);
       this.setState({ inputContent: inputContent });
     }
   }, {
     key: 'render',
     value: function render() {
+
       return _react2['default'].createElement(
         'div',
-        null,
+        { className: 'panel-footer' },
         _react2['default'].createElement(
           'form',
           { onSubmit: this.onSubmit.bind(this) },
-          _react2['default'].createElement('input', { value: this.state.inputContent, onChange: this.onChange.bind(this) }),
           _react2['default'].createElement(
-            'button',
-            null,
-            ' Send '
+            'div',
+            { className: 'input-group' },
+            _react2['default'].createElement('input', { value: this.state.inputContent, onChange: this.onChange.bind(this),
+              id: 'btn-input', type: 'text', className: 'form-control input-sm chat_input',
+              placeholder: 'Write your message here...' }),
+            _react2['default'].createElement(
+              'span',
+              { className: 'input-group-btn' },
+              _react2['default'].createElement(
+                'button',
+                { className: 'btn btn-primary btn-sm', id: 'btn-chat' },
+                'Send'
+              )
+            )
           )
         )
       );
@@ -19199,7 +19283,7 @@ var MessageForm = (function (_Component) {
 exports['default'] = MessageForm;
 module.exports = exports['default'];
 
-},{"react":158}],162:[function(require,module,exports){
+},{"react":158}],163:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -19220,6 +19304,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _Message = require('./Message');
+
+var _Message2 = _interopRequireDefault(_Message);
+
 var MessageList = (function (_Component) {
   _inherits(MessageList, _Component);
 
@@ -19232,27 +19320,27 @@ var MessageList = (function (_Component) {
   _createClass(MessageList, [{
     key: 'render',
     value: function render() {
+      var _this = this;
 
       var renderMessage = this.props.messages.map(function (message, index) {
+
+        var messageType = 'receive';
+        if (_this.props.currentUser == message.author) {
+          messageType = 'sent';
+        }
+        console.log(_this.props.currentUser + ' ' + messageType + ' ' + message.author);
         if (message.text != '') {
           return _react2['default'].createElement(
-            'li',
-            { key: index },
-            ' ',
-            _react2['default'].createElement(
-              'span',
-              { className: 'author' },
-              message.author
-            ),
-            ': ',
+            _Message2['default'],
+            { key: index, author: message.author, type: messageType },
             message.text
           );
         }
       });
 
       return _react2['default'].createElement(
-        'ul',
-        null,
+        'div',
+        { className: 'panel-body msg_container_base' },
         ' ',
         renderMessage,
         ' '
@@ -19266,4 +19354,4 @@ var MessageList = (function (_Component) {
 exports['default'] = MessageList;
 module.exports = exports['default'];
 
-},{"react":158}]},{},[159]);
+},{"./Message":160,"react":158}]},{},[159]);
