@@ -20,5 +20,5 @@ Then go to `http://localhost:3000` to see the app.
 
 
 ## Building GUI
-  [bootsnip](http://bootsnipp.com/snippets/featured/like-hangout-chat)'s "Like Hangout Chat"  Template Added for GUI
+  [bootsnip](http://bootsnipp.com/snippets/featured/like-hangout-chat)'s "Like Hangout Chat"  template is for GUI. Dummy avatar link is used, you may update as your wish. 
 
